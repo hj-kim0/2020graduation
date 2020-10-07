@@ -181,9 +181,18 @@ class LoginForm extends StatelessWidget {
                                   final String userId = tuserIdController.text;
                                   final String passwd = tpasswdController.text;
 
-                                  targeturl = url + 'login/';
+                                  if ((userId == "") | (passwd == "")) {
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                LoginSuccessForm()));
 
-                                  await loginUser(userId, passwd);
+                                    targeturl = url + 'login/';
+
+                                    await loginUser(userId, passwd);
+                                  }
                                 },
                                 child: Center(
                                     child: Text('LOGIN',
@@ -285,6 +294,23 @@ class RegisterForm extends StatelessWidget {
 }
 
 class RegisterSuccessForm extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        resizeToAvoidBottomPadding: false,
+        appBar: AppBar(),
+        body: Column(
+          children: <Widget>[
+            Container(
+                child: Center(
+              child: Text('registration success'),
+            ))
+          ],
+        ));
+  }
+}
+
+class LoginSuccessForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
