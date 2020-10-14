@@ -1,56 +1,30 @@
-import 'package:app/login_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
-import 'user_model.dart';
+import 'login_model.dart';
 
 import 'dart:convert';
+
+import 'screens/registration.dart';
+import 'screens/home.dart';
 //import
 
 void main() {
   runApp(MyApp());
 }
-//run App
+//run
 
-final TextEditingController tnameController = TextEditingController();
 final TextEditingController tuserIdController = TextEditingController();
 final TextEditingController tpasswdController = TextEditingController();
-final TextEditingController tcityController = TextEditingController();
-final TextEditingController tstreetController = TextEditingController();
-final TextEditingController tzipcodeController = TextEditingController();
-//input text save
 
 final String url = 'https://10.0.2.2:8080/';
-//target server url
+
 String targeturl;
 
-Future<User> createUser(String name, String userId, String passwd, String city,
-    String street, String zipcode) async {
-  final msg = jsonEncode({
-    'name': name,
-    'userId': userId,
-    'passwd': passwd,
-    'city': city,
-    'street': street,
-    'zipcode': zipcode
-  });
+LoginData _loginData;
 
-  final response = await http.post(
-    targeturl,
-    headers: {'Content-Type': 'application/json'},
-    body: msg,
-  );
-
-  if (response.statusCode == 201) {
-    final String responseString = response.body;
-    return userFromJson(responseString);
-  } else {
-    return null;
-  }
-}
-//user structure to send
-
-Future<LoginUser> loginUser(String userId, String passwd) async {
+Future<LoginData> createUser(String userId, String passwd) async {
   final msg = jsonEncode({'userId': userId, 'passwd': passwd});
 
   final response = await http.post(
@@ -61,12 +35,12 @@ Future<LoginUser> loginUser(String userId, String passwd) async {
 
   if (response.statusCode == 201) {
     final String responseString = response.body;
-    return loginuserFromJson(responseString);
-  } else {
+    return loginFromJson(responseString);
+  } else if (response.statusCode == 400) {
     return null;
   }
 }
-//login structure to send
+//define input textarea
 
 class MyApp extends StatelessWidget {
   @override
@@ -81,40 +55,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-//start base to be revised later
-
-Widget bulidTextField(String labelText, TextEditingController controller) {
-  return TextFormField(
-    controller: controller,
-    decoration: InputDecoration(
-      labelText: labelText,
-      hintStyle: TextStyle(
-        color: Colors.grey,
-        fontSize: 16.0,
-      ),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-    ),
-    obscureText: labelText == "PASSWORD" ? true : false,
-  );
-}
-//text box widget form
-
-Widget bulidregisterField(String labelText, TextEditingController controller) {
-  return TextField(
-    controller: controller,
-    decoration: InputDecoration(
-      labelText: labelText,
-      hintStyle: TextStyle(
-        color: Colors.grey,
-        fontSize: 5.0,
-      ),
-      border: OutlineInputBorder(),
-    ),
-    obscureText: labelText == "비밀번호" ? true : false,
-  );
-}
 
 class LoginForm extends StatelessWidget {
   @override
@@ -128,32 +68,48 @@ class LoginForm extends StatelessWidget {
                 child: Stack(
                   children: <Widget>[
                     Container(
-                      padding: EdgeInsets.fromLTRB(25.0, 40.0, 0.0, 0.0),
-                      child: Text('안녕하세요 \nGreenCafe입니다.',
+                      padding: EdgeInsets.fromLTRB(30.0, 38.0, 0.0, 0.0),
+                      child: Text('Green',
                           style: TextStyle(
-                              fontSize: 25.0, fontWeight: FontWeight.bold)),
+                              fontSize: 50.0, fontWeight: FontWeight.bold)),
                     ),
                     Container(
-                      padding: EdgeInsets.fromLTRB(25.0, 120.0, 0.0, 0.0),
-                      child: Text('원활한 서비스 이용을 위해 로그인 해주세요.',
+                      padding: EdgeInsets.fromLTRB(25.0, 90.0, 0.0, 0.0),
+                      child: Text('Coffee',
                           style: TextStyle(
-                              fontSize: 10.0, fontWeight: FontWeight.bold)),
+                              fontSize: 80.0, fontWeight: FontWeight.bold)),
                     )
                   ],
                 ),
               ),
               Container(
-                  padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
+                  padding: EdgeInsets.only(top: 35.0, left: 20.0, right: 20.0),
                   child: Column(
                     children: <Widget>[
-                      SizedBox(
-                        height: 40.0,
+                      TextField(
+                        controller: tuserIdController,
+                        decoration: InputDecoration(
+                            labelText: 'ID',
+                            labelStyle: TextStyle(
+                                fontFamily: 'Gothic',
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromRGBO(13, 255, 22, 0)))),
                       ),
-                      bulidTextField("ID", tuserIdController),
-                      SizedBox(
-                        height: 10.0,
+                      TextField(
+                        controller: tpasswdController,
+                        decoration: InputDecoration(
+                            labelText: 'PassWord',
+                            labelStyle: TextStyle(
+                                fontFamily: 'Gothic',
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey),
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromRGBO(13, 255, 22, 0)))),
                       ),
-                      bulidTextField("PASSWORD", tpasswdController),
                       SizedBox(height: 5.0),
                       Container(
                           padding: EdgeInsets.only(top: 15, left: 140),
@@ -165,8 +121,9 @@ class LoginForm extends StatelessWidget {
                             onTap: () {
                               Navigator.push(
                                   context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RegisterForm()));
+                                  CupertinoPageRoute(
+                                      builder: (context) =>
+                                          RegistrationPage()));
                             },
                           )),
                       SizedBox(height: 60),
@@ -181,17 +138,31 @@ class LoginForm extends StatelessWidget {
                                   final String userId = tuserIdController.text;
                                   final String passwd = tpasswdController.text;
 
-                                  if ((userId == "") | (passwd == "")) {
+                                  targeturl = url + 'login/';
+                                  //Navigator.push(
+                                  //    context,
+                                  //    CupertinoPageRoute(
+                                  //        builder: (context) => Homepage()));
+
+                                  _loginData = await createUser(userId, passwd);
+                                  if (_loginData == null) {
+                                    AlertDialog(
+                                      title: new Text("Alert Dialog title"),
+                                      content: new Text("Alert Dialog body"),
+                                      actions: <Widget>[
+                                        new FlatButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: new Text("Close"),
+                                        ),
+                                      ],
+                                    );
                                   } else {
                                     Navigator.push(
                                         context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                LoginSuccessForm()));
-
-                                    targeturl = url + 'login/';
-
-                                    await loginUser(userId, passwd);
+                                        CupertinoPageRoute(
+                                            builder: (context) => Homepage()));
                                   }
                                 },
                                 child: Center(
@@ -200,129 +171,10 @@ class LoginForm extends StatelessWidget {
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                         )))),
-                          ))
+                          )),
+                      Container(child: Column(children: <Widget>[]))
                     ],
                   ))
             ]));
-  }
-}
-
-class RegisterForm extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomPadding: false,
-        appBar: AppBar(),
-        body: Column(
-          children: <Widget>[
-            Container(
-                child: Stack(
-              children: <Widget>[
-                Container(
-                    padding: EdgeInsets.only(top: 10.0),
-                    child: Column(
-                      children: <Widget>[
-                        bulidregisterField("이름", tnameController),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        bulidregisterField("아이디", tuserIdController),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        bulidregisterField("비밀번호", tpasswdController),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        bulidregisterField("도시", tcityController),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        bulidregisterField("거리", tstreetController),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        bulidregisterField("집주소", tzipcodeController),
-                      ],
-                    ))
-              ],
-            )),
-            SizedBox(height: 20),
-            Container(
-                height: 50,
-                child: Material(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.grey,
-                  elevation: 7.0,
-                  child: GestureDetector(
-                      onTap: () async {
-                        //after we received the token should be changed area.
-                        final String name = tnameController.text;
-                        final String userId = tuserIdController.text;
-                        final String passwd = tpasswdController.text;
-                        final String city = tcityController.text;
-                        final String street = tstreetController.text;
-                        final String zipcode = tzipcodeController.text;
-
-                        if ((name == "") |
-                            (userId == "") |
-                            (passwd == "") |
-                            (city == "") |
-                            (street == "") |
-                            (zipcode == "")) {
-                        } else {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RegisterSuccessForm()));
-                          targeturl = url + 'account/create/';
-
-                          await createUser(
-                              name, userId, passwd, city, street, zipcode);
-                        }
-                      },
-                      child: Center(
-                          child: Text('register',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              )))),
-                ))
-          ],
-        ));
-  }
-}
-
-class RegisterSuccessForm extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomPadding: false,
-        appBar: AppBar(),
-        body: Column(
-          children: <Widget>[
-            Container(
-                child: Center(
-              child: Text('registration success'),
-            ))
-          ],
-        ));
-  }
-}
-
-class LoginSuccessForm extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomPadding: false,
-        appBar: AppBar(),
-        body: Column(
-          children: <Widget>[
-            Container(
-                child: Center(
-              child: Text('login success'),
-            ))
-          ],
-        ));
   }
 }
