@@ -86,21 +86,21 @@ class Signin extends StatelessWidget {
                     style: TextStyle(fontSize: 24),
                   ),
                   onPressed: () async {
-                    var username = tuserIdController.text;
-                    var password = tpasswdController.text;
+                    // var username = tuserIdController.text;
+                    // var password = tpasswdController.text;
 
-                    var jwt = await sendIdPw(username, password);
-                    if (jwt != null) {
-                      storage.write(key: "jwt", value: jwt);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomePage.fromBase64(jwt)));
-                    } else {}
-                    //Navigator.push(
-                    //    context,
-                    //    MaterialPageRoute(
-                    //        builder: (context) => HomePage(null, null)));
+                    // var jwt = await sendIdPw(username, password);
+                    // if (jwt != null) {
+                    //   storage.write(key: "jwt", value: jwt);
+                    //   Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //           builder: (context) => HomePage.fromBase64(jwt)));
+                    // } else {}
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomePage(null, null)));
                   },
                   color: Colors.green,
                   textColor: Colors.black,

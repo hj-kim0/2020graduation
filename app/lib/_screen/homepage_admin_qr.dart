@@ -17,8 +17,8 @@ class _QrCreateState extends State<QrCreate> {
     super.initState();
   }
 
-  final String imgurl = 'http://10.0.2.2:8080/getQrImage';
-  //'https://constant.kr/wp-content/uploads/2018/07/link-1271843_1280-1000x1000.png';
+  final String imgurl = //'http://10.0.2.2:8080/getQrImage';
+      'https://www.cognex.com/library/media/resources/symbologies/qrcode.jpg?h=300&w=447&la=ko-KR&hash=9756522DF5A10FA650E81AF696262625D1CD8DD2';
   @override
   Widget build(BuildContext context) {
     double myheight = MediaQuery.of(context).size.height;
